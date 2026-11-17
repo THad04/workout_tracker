@@ -3,8 +3,18 @@ use uuid::Uuid;
 
 #[derive(Debug, Clone)]
 struct Exercise {
+    id: ExerciseId,
     kind_id: ExerciseKindId,
     sets: Vec<Set>,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+struct ExerciseId(Uuid);
+
+impl ExerciseId {
+    fn new() -> Self {
+        Self(Uuid::now_v7())
+    }
 }
 
 #[derive(Debug, Clone)]
@@ -14,7 +24,7 @@ struct Set {
     weight: Weight,
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, PartialOrd, Ord)]
 struct Weight(u32); // weight in tenth of a pound
 
 impl Weight {
@@ -105,7 +115,11 @@ impl Set {
 
 impl Exercise {
     fn new(kind_id: ExerciseKindId, sets: Vec<Set>) -> Exercise {
-        Self { kind_id, sets }
+        Self {
+            id: ExerciseId::new(),
+            kind_id,
+            sets,
+        }
     }
 }
 
@@ -130,5 +144,19 @@ mod tests {
     fn weight_from_lbs() {
         assert_eq!(Weight::from_lbs(225), Weight(2250));
         assert_eq!(Weight::from_lbs(225).as_lb(), 225.0);
+    }
+
+    #[test]
+    fn exercises_get_unique_ids() {
+        let kind = ExerciseKindId::new();
+        let a = Exercise::new(kind, vec![]);
+        let b = Exercise::new(kind, vec![]);
+        assert_eq!(a.kind_id, b.kind_id);
+        assert_ne!(a.id, b.id);
+    }
+
+    #[test]
+    fn from_tenths_works() {
+        assert_eq!(Weight::from_tenths(25).as_lb(), 2.5);
     }
 }
