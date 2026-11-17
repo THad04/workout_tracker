@@ -9,7 +9,7 @@ struct Exercise {
 #[derive(Debug, Clone)]
 struct Set {
     rep_count: u8,
-    weight_lb: Weight,
+    weight: Weight,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
@@ -33,7 +33,7 @@ impl Weight {
 struct Workout {
     name: String,
     date: NaiveDate,
-    exercise_list: Vec<Exercise>,
+    exercises: Vec<Exercise>,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
@@ -46,31 +46,28 @@ struct ExerciseKind {
 }
 
 impl Workout {
-    fn new(name: String, date: NaiveDate, exercise_list: Vec<Exercise>) -> Workout {
+    fn new(name: String, date: NaiveDate, exercises: Vec<Exercise>) -> Workout {
         Self {
             name,
             date,
-            exercise_list,
+            exercises,
         }
     }
 
     fn add_exercise(&mut self, exercise: Exercise) {
-        self.exercise_list.push(exercise);
+        self.exercises.push(exercise);
     }
 
     fn print_workout(&self) {
-        for exercise in &self.exercise_list {
+        for exercise in &self.exercises {
             println!("{:?}", exercise);
         }
     }
 }
 
 impl Set {
-    fn new(rep_count: u8, weight_lb: Weight) -> Set {
-        Self {
-            rep_count,
-            weight_lb,
-        }
+    fn new(rep_count: u8, weight: Weight) -> Set {
+        Self { rep_count, weight }
     }
 }
 
@@ -92,8 +89,14 @@ mod tests {
         let mut w = Workout::new("Push".to_string(), date, vec![]);
         w.add_exercise(Exercise::new(
             ExerciseKindId(1),
-            vec![Set::new(4, Weight(225))],
+            vec![Set::new(4, Weight::from_lbs(225))],
         ));
-        assert_eq!(w.exercise_list.len(), 1);
+        assert_eq!(w.exercises.len(), 1);
+    }
+
+    #[test]
+    fn weight_from_lbs() {
+        assert_eq!(Weight::from_lbs(225), Weight(2250));
+        assert_eq!(Weight::from_lbs(225).as_lb(), 225.0);
     }
 }
