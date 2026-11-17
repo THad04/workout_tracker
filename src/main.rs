@@ -1,4 +1,5 @@
 use chrono::NaiveDate;
+use uuid::Uuid;
 
 #[derive(Debug, Clone)]
 struct Exercise {
@@ -8,6 +9,7 @@ struct Exercise {
 
 #[derive(Debug, Clone)]
 struct Set {
+    id: SetId,
     rep_count: u8,
     weight: Weight,
 }
@@ -20,8 +22,8 @@ impl Weight {
         Weight(lb * 10)
     }
 
-    fn from_tenths(t: u32) {
-        Weight(t);
+    fn from_tenths(t: u32) -> Self {
+        Weight(t)
     }
 
     fn as_lb(&self) -> f32 {
@@ -31,13 +33,38 @@ impl Weight {
 
 #[derive(Debug, Clone)]
 struct Workout {
+    id: WorkoutId,
     name: String,
     date: NaiveDate,
     exercises: Vec<Exercise>,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
-struct ExerciseKindId(u64);
+struct ExerciseKindId(Uuid);
+
+impl ExerciseKindId {
+    fn new() -> Self {
+        Self(Uuid::now_v7())
+    }
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+struct WorkoutId(Uuid);
+
+impl WorkoutId {
+    fn new() -> Self {
+        Self(Uuid::now_v7())
+    }
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+struct SetId(Uuid);
+
+impl SetId {
+    fn new() -> Self {
+        Self(Uuid::now_v7())
+    }
+}
 
 #[derive(Debug, Clone)]
 struct ExerciseKind {
@@ -46,11 +73,12 @@ struct ExerciseKind {
 }
 
 impl Workout {
-    fn new(name: String, date: NaiveDate, exercises: Vec<Exercise>) -> Workout {
+    fn new(name: impl Into<String>, date: NaiveDate) -> Workout {
         Self {
-            name,
+            id: WorkoutId::new(),
+            name: name.into(),
             date,
-            exercises,
+            exercises: vec![],
         }
     }
 
@@ -67,7 +95,11 @@ impl Workout {
 
 impl Set {
     fn new(rep_count: u8, weight: Weight) -> Set {
-        Self { rep_count, weight }
+        Self {
+            id: SetId::new(),
+            rep_count,
+            weight,
+        }
     }
 }
 
@@ -86,9 +118,9 @@ mod tests {
     #[test]
     fn add_exercise_appends() {
         let date = NaiveDate::from_ymd_opt(2026, 11, 16).unwrap();
-        let mut w = Workout::new("Push".to_string(), date, vec![]);
+        let mut w = Workout::new("Push", date);
         w.add_exercise(Exercise::new(
-            ExerciseKindId(1),
+            ExerciseKindId::new(),
             vec![Set::new(4, Weight::from_lbs(225))],
         ));
         assert_eq!(w.exercises.len(), 1);
