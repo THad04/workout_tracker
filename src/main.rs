@@ -9,7 +9,24 @@ struct Exercise {
 #[derive(Debug, Clone)]
 struct Set {
     rep_count: u8,
-    weight_lb: f32,
+    weight_lb: Weight,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+struct Weight(u32); // weight in tenth of a pound
+
+impl Weight {
+    fn from_lbs(lb: u32) -> Self {
+        Weight(lb * 10)
+    }
+
+    fn from_tenths(t: u32) {
+        Weight(t);
+    }
+
+    fn as_lb(&self) -> f32 {
+        self.0 as f32 / 10.0
+    }
 }
 
 #[derive(Debug, Clone)]
@@ -49,7 +66,7 @@ impl Workout {
 }
 
 impl Set {
-    fn new(rep_count: u8, weight_lb: f32) -> Set {
+    fn new(rep_count: u8, weight_lb: Weight) -> Set {
         Self {
             rep_count,
             weight_lb,
@@ -63,18 +80,20 @@ impl Exercise {
     }
 }
 
-fn main() {
-    let set1 = Set::new(4, 75.0);
-    let set2 = Set::new(8, 225.0);
+fn main() {}
 
-    let bench_id = ExerciseKindId(1);
-    let bench = Exercise::new(bench_id, vec![set1, set2]);
+#[cfg(test)]
+mod tests {
+    use super::*;
 
-    let date = NaiveDate::from_ymd_opt(2026, 11, 16).unwrap();
-    let mut workout = Workout::new(String::from("Push Day"), date, vec![bench]);
-
-    let squat = Exercise::new(ExerciseKindId(2), vec![Set::new(5, 250.0)]);
-    workout.add_exercise(squat);
-
-    workout.print_workout();
+    #[test]
+    fn add_exercise_appends() {
+        let date = NaiveDate::from_ymd_opt(2026, 11, 16).unwrap();
+        let mut w = Workout::new("Push".to_string(), date, vec![]);
+        w.add_exercise(Exercise::new(
+            ExerciseKindId(1),
+            vec![Set::new(4, Weight(225))],
+        ));
+        assert_eq!(w.exercise_list.len(), 1);
+    }
 }
