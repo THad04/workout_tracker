@@ -8,6 +8,16 @@ struct Exercise {
     sets: Vec<Set>,
 }
 
+impl Exercise {
+    fn new(kind_id: ExerciseKindId, sets: Vec<Set>) -> Exercise {
+        Self {
+            id: ExerciseId::new(),
+            kind_id,
+            sets,
+        }
+    }
+}
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 struct ExerciseId(Uuid);
 
@@ -22,6 +32,25 @@ struct Set {
     id: SetId,
     rep_count: u8,
     weight: Weight,
+}
+
+impl Set {
+    fn new(rep_count: u8, weight: Weight) -> Set {
+        Self {
+            id: SetId::new(),
+            rep_count,
+            weight,
+        }
+    }
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+struct SetId(Uuid);
+
+impl SetId {
+    fn new() -> Self {
+        Self(Uuid::now_v7())
+    }
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, PartialOrd, Ord)]
@@ -49,39 +78,6 @@ struct Workout {
     exercises: Vec<Exercise>,
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
-struct ExerciseKindId(Uuid);
-
-impl ExerciseKindId {
-    fn new() -> Self {
-        Self(Uuid::now_v7())
-    }
-}
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
-struct WorkoutId(Uuid);
-
-impl WorkoutId {
-    fn new() -> Self {
-        Self(Uuid::now_v7())
-    }
-}
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
-struct SetId(Uuid);
-
-impl SetId {
-    fn new() -> Self {
-        Self(Uuid::now_v7())
-    }
-}
-
-#[derive(Debug, Clone)]
-struct ExerciseKind {
-    id: ExerciseKindId,
-    name: String,
-}
-
 impl Workout {
     fn new(name: impl Into<String>, date: NaiveDate) -> Workout {
         Self {
@@ -103,24 +99,28 @@ impl Workout {
     }
 }
 
-impl Set {
-    fn new(rep_count: u8, weight: Weight) -> Set {
-        Self {
-            id: SetId::new(),
-            rep_count,
-            weight,
-        }
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+struct WorkoutId(Uuid);
+
+impl WorkoutId {
+    fn new() -> Self {
+        Self(Uuid::now_v7())
     }
 }
 
-impl Exercise {
-    fn new(kind_id: ExerciseKindId, sets: Vec<Set>) -> Exercise {
-        Self {
-            id: ExerciseId::new(),
-            kind_id,
-            sets,
-        }
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+struct ExerciseKindId(Uuid);
+
+impl ExerciseKindId {
+    fn new() -> Self {
+        Self(Uuid::now_v7())
     }
+}
+
+#[derive(Debug, Clone)]
+struct ExerciseKind {
+    id: ExerciseKindId,
+    name: String,
 }
 
 fn main() {}
