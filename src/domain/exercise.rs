@@ -18,10 +18,22 @@ impl Exercise {
         }
     }
 
+    pub fn id(&self) -> ExerciseId {
+        self.id
+    }
+
+    pub fn kind_id(&self) -> ExerciseKindId {
+        self.kind_id
+    }
+
+    pub fn sets(&self) -> &[Set] {
+        &self.sets
+    }
+
     pub fn exercise_volume(&self) -> Weight {
         self.sets
             .iter()
-            .map(|x| x.get_weight() * x.get_rep_count().into())
+            .map(|x| x.weight() * x.rep_count().into())
             .sum()
     }
 }

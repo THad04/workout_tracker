@@ -22,6 +22,22 @@ impl Workout {
         }
     }
 
+    pub fn id(&self) -> WorkoutId {
+        self.id
+    }
+
+    pub fn name(&self) -> &str {
+        &self.name
+    }
+
+    pub fn date(&self) -> NaiveDate {
+        self.date
+    }
+
+    pub fn exercises(&self) -> &[Exercise] {
+        &self.exercises
+    }
+
     pub fn add_exercise(&mut self, exercise: Exercise) {
         self.exercises.push(exercise);
     }

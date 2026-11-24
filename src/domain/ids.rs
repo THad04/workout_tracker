@@ -9,12 +9,28 @@ impl ExerciseId {
     }
 }
 
+impl Default for ExerciseId {
+    fn default() -> Self {
+        ExerciseId::new()
+    }
+}
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub struct SetId(Uuid);
 
 impl SetId {
     pub fn new() -> Self {
         Self(Uuid::now_v7())
+    }
+
+    pub fn id(&self) -> Uuid {
+        self.0
+    }
+}
+
+impl Default for SetId {
+    fn default() -> Self {
+        SetId::new()
     }
 }
 
@@ -25,6 +41,16 @@ impl WorkoutId {
     pub fn new() -> Self {
         Self(Uuid::now_v7())
     }
+
+    pub fn id(&self) -> Uuid {
+        self.0
+    }
+}
+
+impl Default for WorkoutId {
+    fn default() -> Self {
+        WorkoutId::new()
+    }
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
@@ -33,5 +59,15 @@ pub struct ExerciseKindId(Uuid);
 impl ExerciseKindId {
     pub fn new() -> Self {
         Self(Uuid::now_v7())
+    }
+
+    pub fn id(&self) -> Uuid {
+        self.0
+    }
+}
+
+impl Default for ExerciseKindId {
+    fn default() -> Self {
+        ExerciseKindId::new()
     }
 }

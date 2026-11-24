@@ -18,11 +18,15 @@ impl Set {
         }
     }
 
-    pub fn get_weight(&self) -> Weight {
+    pub fn id(&self) -> SetId {
+        self.id
+    }
+
+    pub fn weight(&self) -> Weight {
         self.weight
     }
 
-    pub fn get_rep_count(&self) -> Reps {
+    pub fn rep_count(&self) -> Reps {
         self.rep_count
     }
 }
