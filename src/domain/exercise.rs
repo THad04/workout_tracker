@@ -1,5 +1,6 @@
 use super::ids::{ExerciseId, ExerciseKindId};
 use super::set::Set;
+use super::weight::Weight;
 
 #[derive(Debug, Clone)]
 pub struct Exercise {
@@ -16,12 +17,36 @@ impl Exercise {
             sets,
         }
     }
+
+    pub fn exercise_volume(&self) -> Weight {
+        self.sets
+            .iter()
+            .map(|x| x.get_weight() * x.get_rep_count().into())
+            .sum()
+    }
 }
 
 #[derive(Debug, Clone)]
 pub struct ExerciseKind {
     id: ExerciseKindId,
     name: String,
+}
+
+impl ExerciseKind {
+    pub fn new(name: String) -> ExerciseKind {
+        ExerciseKind {
+            id: ExerciseKindId::new(),
+            name,
+        }
+    }
+
+    pub fn id(&self) -> ExerciseKindId {
+        self.id
+    }
+
+    pub fn name(&self) -> &str {
+        &self.name
+    }
 }
 
 #[cfg(test)]

@@ -1,3 +1,5 @@
+use std::{iter::Sum, ops::Mul};
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, PartialOrd, Ord)]
 pub struct Weight(u32); // weight in tenth of a pound
 
@@ -12,6 +14,20 @@ impl Weight {
 
     pub fn as_lb(self) -> f32 {
         self.0 as f32 / 10.0
+    }
+}
+
+impl Sum for Weight {
+    fn sum<I: Iterator<Item = Self>>(iter: I) -> Self {
+        Weight(iter.map(|w| w.0).sum())
+    }
+}
+
+impl Mul<u32> for Weight {
+    type Output = Weight;
+
+    fn mul(self, rhs: u32) -> Self::Output {
+        Weight(self.0 * rhs)
     }
 }
 
