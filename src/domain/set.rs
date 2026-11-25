@@ -29,4 +29,9 @@ impl Set {
     pub fn rep_count(&self) -> Reps {
         self.rep_count
     }
+
+    /// Same reps and weight, but a fresh SetId.
+    pub fn duplicate(&self) -> Set {
+        Set::new(self.rep_count, self.weight)
+    }
 }
